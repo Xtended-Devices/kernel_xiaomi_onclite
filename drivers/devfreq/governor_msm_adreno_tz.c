@@ -434,7 +434,7 @@ static int lvl_divider_map_3[] = {10,1,1,1,1,14,12    ,1,1};
 
 #endif
 
-static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
+static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq, u32 *flag)
 {
 	int result = 0;
 	struct devfreq_msm_adreno_tz_data *priv = devfreq->data;
