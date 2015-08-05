@@ -5350,12 +5350,17 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
 		dec_rq_walt_stats(rq, p);
 	}
 
-	util_est_dequeue(&rq->cfs, p, task_sleep);
-	hrtick_update(rq);
+
+		if (unlikely(p->nr_cpus_allowed == 1))
+			rq->nr_pinned_tasks--;
+
+		dec_rq_walt_stats(rq, p);
+		util_est_dequeue(&rq->cfs, p, task_sleep);
+		hrtick_update(rq);
 }
 
-#ifdef CONFIG_SMP
 
+#ifdef CONFIG_SMP
 /* Working cpumask for: load_balance, load_balance_newidle. */
 DEFINE_PER_CPU(cpumask_var_t, load_balance_mask);
 DEFINE_PER_CPU(cpumask_var_t, select_idle_mask);
@@ -11905,6 +11910,8 @@ static inline bool nohz_kick_needed(struct rq *rq, bool only_update)
 			if (current->nr_cpus_allowed > 1 || !delta)
 				return false;
 	}
+
+
 	/*
 	 * If energy aware is enabled, do idle load balance if runqueue has
 	 * at least 2 tasks and cpu is overutilized
