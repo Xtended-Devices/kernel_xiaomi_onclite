@@ -1699,27 +1699,21 @@ static inline long qcedev_ioctl(struct file *file,
 	case QCEDEV_IOCTL_DEC_REQ:
 		if (copy_from_user(&qcedev_areq->cipher_op_req,
 				(void __user *)arg,
-				sizeof(struct qcedev_cipher_op_req))) {
-			err = -EFAULT;
-			goto exit_free_qcedev_areq;
-		}
+				sizeof(struct qcedev_cipher_op_req)))
+			return -EFAULT;
 		qcedev_areq->op_type = QCEDEV_CRYPTO_OPER_CIPHER;
 
 		if (qcedev_check_cipher_params(&qcedev_areq->cipher_op_req,
-				podev)) {
-			err = -EINVAL;
-			goto exit_free_qcedev_areq;
-		}
+				podev))
+			return -EINVAL;
 
 		err = qcedev_vbuf_ablk_cipher(qcedev_areq, handle);
 		if (err)
 			goto exit_free_qcedev_areq;
 		if (copy_to_user((void __user *)arg,
 					&qcedev_areq->cipher_op_req,
-					sizeof(struct qcedev_cipher_op_req))) {
-			err = -EFAULT;
-			goto exit_free_qcedev_areq;
-		}
+					sizeof(struct qcedev_cipher_op_req)))
+			return -EFAULT;
 		break;
 
 	case QCEDEV_IOCTL_SHA_INIT_REQ:
@@ -1746,9 +1740,8 @@ static inline long qcedev_ioctl(struct file *file,
 		}
 		mutex_unlock(&hash_access_lock);
 		if (copy_to_user((void __user *)arg, &qcedev_areq->sha_op_req,
-					sizeof(struct qcedev_sha_op_req))) {
-			err = -EFAULT;
-			goto exit_free_qcedev_areq;
+					sizeof(struct qcedev_sha_op_req)))
+			return -EFAULT;
 		}
 		handle->sha_ctxt.init_done = true;
 		}
@@ -1852,10 +1845,8 @@ static inline long qcedev_ioctl(struct file *file,
 				handle->sha_ctxt.diglen);
 		mutex_unlock(&hash_access_lock);
 		if (copy_to_user((void __user *)arg, &qcedev_areq->sha_op_req,
-					sizeof(struct qcedev_sha_op_req))) {
-			err = -EFAULT;
-			goto exit_free_qcedev_areq;
-		}
+					sizeof(struct qcedev_sha_op_req)))
+			return -EFAULT;
 		handle->sha_ctxt.init_done = false;
 		break;
 
