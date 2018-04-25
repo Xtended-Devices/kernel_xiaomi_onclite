@@ -5,7 +5,8 @@
 #include <linux/jump_label.h>
 #include <linux/kobject.h>
 #include <linux/rcupdate.h>
-#include <linux/sched.h>
+#include <linux/sched/cpufreq.h>
+#include <linux/sched/topology.h>
 #include <linux/types.h>
 
 #ifdef CONFIG_ENERGY_MODEL
@@ -116,9 +117,7 @@ static inline unsigned long em_pd_energy(struct em_perf_domain *pd,
 	 *   cs->cap = --------------------                          (1)
 	 *                 cpu_max_freq
 	 *
-	 * So, ignoring the costs of idle states (which are not available in
-	 * the EM), the energy consumed by this CPU at that capacity state is
-	 * estimated as:
+	 * So, the energy consumed by this CPU at that capacity state is:
 	 *
 	 *             cs->power * cpu_util
 	 *   cpu_nrg = --------------------                          (2)
