@@ -586,7 +586,6 @@ static void update_running_avg(void)
 	}
 	spin_unlock_irqrestore(&state_lock, flags);
 
-	last_nr_big = big_avg;
 	walt_rotation_checkpoint(big_avg);
 }
 
