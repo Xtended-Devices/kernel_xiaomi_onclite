@@ -1510,6 +1510,57 @@ const char *cmd_set_prop_map[DSI_CMD_SET_MAX] = {
 	"ROI not parsed from DTSI, generated dynamically",
 	"qcom,mdss-dsi-timing-switch-command",
 	"qcom,mdss-dsi-post-mode-switch-on-command",
+	"qcom,mdss-dsi-panel-acl-command",
+	"qcom,mdss-dsi-panel-hbm-on-command",//464
+	"qcom,mdss-dsi-panel-hbm-on-command-2",//498
+	"qcom,mdss-dsi-panel-hbm-on-command-3",//532
+	"qcom,mdss-dsi-panel-hbm-on-command-4",//566
+	"qcom,mdss-dsi-panel-hbm-on-command-5",//600
+	"qcom,mdss-dsi-panel-hbm-off-command",
+	"qcom,mdss-dsi-panel-aod-on-command-1",//10-alpm
+	"qcom,mdss-dsi-panel-aod-on-command-2",//50
+	"qcom,mdss-dsi-panel-aod-on-command-3",//10-hlpm
+	"qcom,mdss-dsi-panel-aod-on-command-4",//50
+	"qcom,mdss-dsi-panel-aod-off-command",
+	"qcom,mdss-dsi-panel-aod-mode-command-1",
+	"qcom,mdss-dsi-panel-aod-mode-command-2",
+	"qcom,mdss-dsi-panel-aod-mode-command-3",
+	"qcom,mdss-dsi-panel-aod-mode-command-4",
+	"qcom,mdss-dsi-panel-serial-num-command",
+	"qcom,mdss-dsi-panel-id-command",
+	"qcom,mdss-dsi-panel-read-register-open-command",
+	"qcom,mdss-dsi-panel-id1-command",
+	"qcom,mdss-dsi-panel-id2-command",
+	"qcom,mdss-dsi-panel-id3-command",
+	"qcom,mdss-dsi-panel-id4-command",
+	"qcom,mdss-dsi-panel-id5-command",
+	"qcom,mdss-dsi-panel-id6-command",
+	"qcom,mdss-dsi-panel-id7-command",
+	"qcom,mdss-dsi-panel-read-register-close-command",
+	"qcom,mdss-dsi-panel-hbm-max-brightness-command-on",
+	"qcom,mdss-dsi-panel-hbm-max-brightness-command-off",
+	"qcom,mdss-dsi-panel-aod-off-hbm-on-command",
+	"qcom,mdss-dsi-panel-hbm-off-aod-on-command",
+	"qcom,mdss-dsi-panel-aod-off-samsung-command",
+	"qcom,mdss-dsi-panel-aod-off-new-command",
+    "qcom,mdss-dsi-panel-display-p3-mode-on-command",
+	"qcom,mdss-dsi-panel-display-p3-mode-off-command",
+	"qcom,mdss-dsi-panel-display-wide-color-mode-on-command",
+	"qcom,mdss-dsi-panel-display-wide-color-mode-off-command",
+	"qcom,mdss-dsi-panel-display-srgb-color-mode-on-command",
+	"qcom,mdss-dsi-panel-display-srgb-color-mode-off-command",
+	"qcom,mdss-dsi-customer-srgb-enable-command",
+	"qcom,mdss-dsi-customer-srgb-disable-command",
+	"qcom,mdss-dsi-customer-p3-enable-command",
+	"qcom,mdss-dsi-customer-p3-disable-command",
+	"qcom,mdss-dsi-panel-command",
+	"qcom,mdss-dsi-seed-command",
+	"qcom,mdss-dsi-panel-hbm-off-command",
+	"qcom,mdss-dsi-panel-hbm-on-command",
+	"qcom,mdss-dsi-panel-hbm-on-command-2",
+	"qcom,mdss-dsi-panel-hbm-on-command-3",
+	"qcom,mdss-dsi-panel-hbm-on-command-4",
+	"qcom,mdss-dsi-panel-hbm-on-command-5",
 };
 
 const char *cmd_set_state_map[DSI_CMD_SET_MAX] = {
@@ -1534,6 +1585,57 @@ const char *cmd_set_state_map[DSI_CMD_SET_MAX] = {
 	"ROI not parsed from DTSI, generated dynamically",
 	"qcom,mdss-dsi-timing-switch-command-state",
 	"qcom,mdss-dsi-post-mode-switch-on-command-state",
+	"qcom,mdss-dsi-acl-command-state",
+	"qcom,mdss-dsi-hbm-on-command-state",//464
+	"qcom,mdss-dsi-hbm-on-command-state",//498
+	"qcom,mdss-dsi-hbm-on-command-state",//532
+	"qcom,mdss-dsi-hbm-on-command-state",//566
+	"qcom,mdss-dsi-hbm-on-command-state",//600
+	"qcom,mdss-dsi-hbm-off-command-state",//off
+	"qcom,mdss-dsi-aod-on-command-state",// 1
+	"qcom,mdss-dsi-aod-on-command-state",// 2
+	"qcom,mdss-dsi-aod-on-command-state",// 3
+	"qcom,mdss-dsi-aod-on-command-state",// 4
+	"qcom,mdss-dsi-aod-off-command-state",//off
+	"qcom,mdss-dsi-aod-mode-command-state",//10nit
+	"qcom,mdss-dsi-aod-mode-command-state",//50nit
+	"qcom,mdss-dsi-aod-mode-command-state",//10nit
+	"qcom,mdss-dsi-aod-mode-command-state",//50nit
+	"qcom,mdss-dsi-panel-serial-num-command-state",
+	"qcom,mdss-dsi-panel-id-command-state",
+	"qcom,mdss-dsi-panel-read-register-open-command-state",
+	"qcom,mdss-dsi-panel-id1-command-state",
+	"qcom,mdss-dsi-panel-id2-command-state",
+	"qcom,mdss-dsi-panel-id3-command-state",
+	"qcom,mdss-dsi-panel-id4-command-state",
+	"qcom,mdss-dsi-panel-id5-command-state",
+	"qcom,mdss-dsi-panel-id6-command-state",
+	"qcom,mdss-dsi-panel-id7-command-state",
+	"qcom,mdss-dsi-panel-read-register-close-command-state",
+	"qcom,mdss-dsi-panel-hbm-max-brightness-command-on-state",
+	"qcom,mdss-dsi-panel-hbm-max-brightness-command-off-state",
+	"qcom,mdss-dsi-panel-aod-off-hbm-on-command-state",
+	"qcom,mdss-dsi-panel-hbm-off-aod-on-command-state",
+	"qcom,mdss-dsi-panel-aod-off-samsung-command-state",
+	"qcom,mdss-dsi-panel-aod-off-new-command-state",
+	"qcom,mdss-dsi-panel-display-p3-mode-on-command-state",
+	"qcom,mdss-dsi-panel-display-p3-mode-off-command-state",
+	"qcom,mdss-dsi-panel-display-wide-color-mode-on-command-state",
+	"qcom,mdss-dsi-panel-display-wide-color-mode-off-command-state",
+	"qcom,mdss-dsi-panel-display-srgb-color-mode-on-command-state",
+	"qcom,mdss-dsi-panel-display-srgb-color-mode-off-command-state",
+	"qcom,mdss-dsi-customer-srgb-enable-command-state",
+	"qcom,mdss-dsi-customer-srgb-disable-command-state",
+	"qcom,mdss-dsi-customer-p3-enable-command-state",
+	"qcom,mdss-dsi-customer-p3-disable-command-state",
+	"qcom,mdss-dsi-panel-command-state",
+	"qcom,mdss-dsi-seed-command-state",
+	"qcom,mdss-dsi-hbm-off-command-state",
+	"qcom,mdss-dsi-hbm-on-command-state",
+	"qcom,mdss-dsi-hbm-on-command-state",
+	"qcom,mdss-dsi-hbm-on-command-state",
+	"qcom,mdss-dsi-hbm-on-command-state",
+	"qcom,mdss-dsi-hbm-on-command-state",
 };
 
 static int dsi_panel_get_cmd_pkt_count(const char *data, u32 length, u32 *cnt)
@@ -3735,6 +3837,43 @@ int dsi_panel_enable(struct dsi_panel *panel)
 	}
 	panel->panel_initialized = true;
 	mutex_unlock(&panel->panel_lock);
+	if (panel->aod_mode == 2) {
+		rc = dsi_panel_set_aod_mode(panel, 2);
+		panel->aod_status = 1;
+	}
+	if (panel->aod_mode == 0) {
+		rc = dsi_panel_set_aod_mode(panel, 0);
+		panel->aod_status = 0;
+	}
+/*
+	if (panel->acl_mode)
+		dsi_panel_set_acl_mode(panel, panel->acl_mode);
+
+	if (panel->srgb_mode)
+		dsi_panel_set_srgb_mode(panel, panel->srgb_mode);
+
+	if (panel->dci_p3_mode)
+		dsi_panel_set_dci_p3_mode(panel, panel->dci_p3_mode);
+
+	if (panel->night_mode)
+		dsi_panel_set_night_mode(panel, panel->night_mode);
+
+	if (panel->oneplus_mode)
+		dsi_panel_set_oneplus_mode(panel, panel->oneplus_mode);
+
+	if (panel->adaption_mode)
+		dsi_panel_set_adaption_mode(panel, panel->adaption_mode);
+
+*/	
+
+        if (panel->hbm_los_mode)
+	    dsi_panel_apply_hbm_mode(panel);
+
+	if (panel->hbm_mode)
+		dsi_panel_set_hbm_mode(panel, panel->hbm_mode);
+
+	/* remove print actvie ws */
+	pm_print_active_wakeup_sources_queue(false);
 	return rc;
 }
 
@@ -3817,6 +3956,32 @@ int dsi_panel_disable(struct dsi_panel *panel)
 error:
 	mutex_unlock(&panel->panel_lock);
 	return rc;
+}
+
+int dsi_panel_apply_hbm_mode(struct dsi_panel *panel)
+{
+    static const enum dsi_cmd_set_type type_map[] = {
+	DSI_CMD_SET_LOS_HBM_OFF,
+	DSI_CMD_SET_LOS_HBM_ON_1,
+	DSI_CMD_SET_LOS_HBM_ON_2,
+	DSI_CMD_SET_LOS_HBM_ON_3,
+	DSI_CMD_SET_LOS_HBM_ON_4,
+	DSI_CMD_SET_LOS_HBM_ON_5
+    };
+
+    enum dsi_cmd_set_type type;
+    int rc;
+
+    if (panel->hbm_los_mode >= 0 && panel->hbm_los_mode < ARRAY_SIZE(type_map))
+	type = type_map[panel->hbm_los_mode];
+    else
+	type = DSI_CMD_SET_HBM_OFF;
+
+    mutex_lock(&panel->panel_lock);
+    rc = dsi_panel_tx_cmd_set(panel, type);
+    mutex_unlock(&panel->panel_lock);
+
+    return rc;
 }
 
 int dsi_panel_unprepare(struct dsi_panel *panel)
