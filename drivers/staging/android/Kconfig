@@ -42,6 +42,17 @@ config ANDROID_VSOC
 	  a 'cuttlefish' Android image inside QEmu. The driver interacts with
 	  a QEmu ivshmem device. If built as a module, it will be called vsoc.
 
+config ANDROID_SIMPLE_LMK
+	bool "Simple Android Low Memory Killer"
+	depends on !ANDROID_LOW_MEMORY_KILLER
+	---help---
+	  This is a simple replacement for the Android Low Memory Killer
+	  driver that simply targets a predefined number of pages to be freed
+	  every time a memory allocation attempt is about to utilize direct
+	  reclaim. Processes are killed according to the priorities that
+	  Android gives them; in other words, the least important processes are
+	  always killed first.
+
 source "drivers/staging/android/ion/Kconfig"
 
 endif # if ANDROID
