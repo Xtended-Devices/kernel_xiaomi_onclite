@@ -5156,124 +5156,28 @@ int sde_encoder_display_failure_notification(struct drm_encoder *enc)
 	return 0;
 }
 
-/**
- * sde_encoder_phys_setup_cdm - setup chroma down block
- * @phys_enc:	Pointer to physical encoder
- * @output_type: HDMI/WB
- * @format:	Output format
- * @roi: Output size
- */
-void sde_encoder_phys_setup_cdm(struct sde_encoder_phys *phys_enc,
-		const struct sde_format *format, u32 output_type,
-		struct sde_rect *roi)
+void sde_encoder_trigger_early_wakeup(struct drm_encoder *drm_enc)
 {
-	struct drm_encoder *encoder = phys_enc->parent;
 	struct sde_encoder_virt *sde_enc = NULL;
-	struct sde_hw_cdm *hw_cdm = phys_enc->hw_cdm;
-	struct sde_hw_cdm_cfg *cdm_cfg = &phys_enc->cdm_cfg;
-	struct drm_connector *connector = phys_enc->connector;
-	int ret;
-	u32 csc_type = 0;
+	struct msm_drm_private *priv = NULL;
 
-	if (!encoder) {
-		SDE_ERROR("invalid encoder\n");
-		return;
-	}
-	sde_enc = to_sde_encoder_virt(encoder);
-
-	if (!SDE_FORMAT_IS_YUV(format)) {
-		SDE_DEBUG_ENC(sde_enc, "[cdm_disable fmt:%x]\n",
-				format->base.pixel_format);
-
-		if (hw_cdm && hw_cdm->ops.disable)
-			hw_cdm->ops.disable(hw_cdm);
-
+	priv = drm_enc->dev->dev_private;
+	sde_enc = to_sde_encoder_virt(drm_enc);
+	if (!sde_enc->crtc || (sde_enc->crtc->index
+			>= ARRAY_SIZE(priv->disp_thread))) {
+		SDE_DEBUG_ENC(sde_enc,
+			"invalid cached CRTC: %d or crtc index: %d\n",
+			sde_enc->crtc == NULL,
+			sde_enc->crtc ? sde_enc->crtc->index : -EINVAL);
 		return;
 	}
 
-	memset(cdm_cfg, 0, sizeof(struct sde_hw_cdm_cfg));
+	SDE_ATRACE_BEGIN("sde_encoder_resource_control");
+	if (sde_enc->rc_state == SDE_ENC_RC_STATE_IDLE) {
+		sde_encoder_resource_control(drm_enc,
+					     SDE_ENC_RC_EVENT_EARLY_WAKEUP);
 
-	cdm_cfg->output_width = roi->w;
-	cdm_cfg->output_height = roi->h;
-	cdm_cfg->output_fmt = format;
-	cdm_cfg->output_type = output_type;
-	cdm_cfg->output_bit_depth = SDE_FORMAT_IS_DX(format) ?
-		CDM_CDWN_OUTPUT_10BIT : CDM_CDWN_OUTPUT_8BIT;
-
-	/* enable 10 bit logic */
-	switch (cdm_cfg->output_fmt->chroma_sample) {
-	case SDE_CHROMA_RGB:
-		cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
-		cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
-		break;
-	case SDE_CHROMA_H2V1:
-		cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
-		cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
-		break;
-	case SDE_CHROMA_420:
-		cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
-		cdm_cfg->v_cdwn_type = CDM_CDWN_OFFSITE;
-		break;
-	case SDE_CHROMA_H1V2:
-	default:
-		SDE_ERROR("unsupported chroma sampling type\n");
-		cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
-		cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
-		break;
 	}
+	SDE_ATRACE_END("sde_encoder_resource_control");
 
-	SDE_DEBUG_ENC(sde_enc, "[cdm_enable:%d,%d,%X,%d,%d,%d,%d]\n",
-			cdm_cfg->output_width,
-			cdm_cfg->output_height,
-			cdm_cfg->output_fmt->base.pixel_format,
-			cdm_cfg->output_type,
-			cdm_cfg->output_bit_depth,
-			cdm_cfg->h_cdwn_type,
-			cdm_cfg->v_cdwn_type);
-
-	/**
-	 * Choose CSC matrix based on following rules:
-	 * 1. If connector supports quantization select,
-	 *	  pick Full-Range for better quality.
-	 * 2. If non-CEA mode, then pick Full-Range as per CEA spec
-	 * 3. Otherwise, pick Limited-Range as all other CEA modes
-	 *    need a limited range
-	 */
-
-	if (output_type == CDM_CDWN_OUTPUT_HDMI) {
-		if (connector && connector->yuv_qs)
-			csc_type = SDE_CSC_RGB2YUV_601FR;
-		else if (connector &&
-			sde_connector_mode_needs_full_range(connector))
-			csc_type = SDE_CSC_RGB2YUV_601FR;
-		else
-			csc_type = SDE_CSC_RGB2YUV_601L;
-	} else if (output_type == CDM_CDWN_OUTPUT_WB) {
-		csc_type = SDE_CSC_RGB2YUV_601L;
-	}
-
-	if (hw_cdm && hw_cdm->ops.setup_csc_data) {
-		ret = hw_cdm->ops.setup_csc_data(hw_cdm,
-				&sde_csc_10bit_convert[csc_type]);
-		if (ret < 0) {
-			SDE_ERROR("failed to setup CSC %d\n", ret);
-			return;
-		}
-	}
-
-	if (hw_cdm && hw_cdm->ops.setup_cdwn) {
-		ret = hw_cdm->ops.setup_cdwn(hw_cdm, cdm_cfg);
-		if (ret < 0) {
-			SDE_ERROR("failed to setup CDM %d\n", ret);
-			return;
-		}
-	}
-
-	if (hw_cdm && hw_cdm->ops.enable) {
-		ret = hw_cdm->ops.enable(hw_cdm, cdm_cfg);
-		if (ret < 0) {
-			SDE_ERROR("failed to enable CDM %d\n", ret);
-			return;
-		}
-	}
 }
