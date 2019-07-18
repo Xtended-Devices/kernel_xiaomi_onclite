@@ -1333,6 +1333,12 @@ static int msm_geni_serial_handle_tx(struct uart_port *uport, bool done,
 	if (!msm_port->cur_tx_remaining) {
 		msm_geni_serial_setup_tx(uport, pending);
 		msm_port->cur_tx_remaining = pending;
+
+		/* Re-Enable WATERMARK interrupt while starting new transfer */
+		irq_en = geni_read_reg_nolog(uport->membase, SE_GENI_M_IRQ_EN);
+		if (!(irq_en & M_TX_FIFO_WATERMARK_EN))
+			geni_write_reg_nolog(irq_en | M_TX_FIFO_WATERMARK_EN,
+					uport->membase, SE_GENI_M_IRQ_EN);
 	}
 
 	bytes_remaining = xmit_size;
@@ -1360,6 +1366,15 @@ static int msm_geni_serial_handle_tx(struct uart_port *uport, bool done,
 		wmb();
 	}
 	xmit->tail = temp_tail;
+
+	/*
+	 * The tx fifo watermark is level triggered and latched. Though we had
+	 * cleared it in qcom_geni_serial_isr it will have already reasserted
+	 * so we must clear it again here after our writes.
+	 */
+	geni_write_reg_nolog(M_TX_FIFO_WATERMARK_EN, uport->membase,
+						SE_GENI_M_IRQ_CLEAR);
+
 exit_handle_tx:
 	if (!msm_port->cur_tx_remaining) {
 		/* Clear WATERMARK interrupt for each transfer completion */
@@ -1506,7 +1521,7 @@ static irqreturn_t msm_geni_serial_isr(int isr, void *dev)
 
 	if (!dma) {
 		if ((m_irq_status & m_irq_en) &
-		    (M_TX_FIFO_WATERMARK_EN | M_CMD_DONE_EN))
+			(M_TX_FIFO_WATERMARK_EN | M_CMD_DONE_EN))
 			msm_geni_serial_handle_tx(uport,
 					m_irq_status & M_CMD_DONE_EN,
 					geni_status & M_GENI_CMD_ACTIVE);
