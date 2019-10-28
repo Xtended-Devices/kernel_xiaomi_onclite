@@ -1198,6 +1198,7 @@ static int __init core_ctl_init(void)
 			"core_ctl/isolation:dead",
 			NULL, core_ctl_isolation_dead_cpu);
 
+#ifdef CONFIG_SCHED_WALT
 	for_each_cpu(cpu, &cpus) {
 		int ret;
 		const struct cpumask *cluster_cpus = cpu_coregroup_mask(cpu);
@@ -1207,6 +1208,8 @@ static int __init core_ctl_init(void)
 			pr_warn("unable to create core ctl group: %d\n", ret);
 		cpumask_andnot(&cpus, &cpus, cluster_cpus);
 	}
+#endif
+
 	initialized = true;
 	return 0;
 }
