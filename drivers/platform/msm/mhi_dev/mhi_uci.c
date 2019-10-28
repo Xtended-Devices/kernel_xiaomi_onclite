@@ -911,7 +911,6 @@ static int mhi_uci_client_release(struct inode *mhi_inode,
 		struct file *file_handle)
 {
 	struct uci_client *uci_handle = file_handle->private_data;
-	int count = 0;
 
 	if (!uci_handle)
 		return -EINVAL;
@@ -923,43 +922,22 @@ static int mhi_uci_client_release(struct inode *mhi_inode,
 		return 0;
 	}
 
-	uci_log(UCI_DBG_DBG,
-			"Last client left, closing channel 0x%x\n",
-			iminor(mhi_inode));
+			if (!(uci_handle->f_flags & O_SYNC))
+				kfree(uci_handle->wreqs);
+			mutex_lock(&uci_handle->out_chan_lock);
+			mhi_dev_close_channel(uci_handle->out_handle);
+			wake_up(&uci_handle->write_wq);
+			mutex_unlock(&uci_handle->out_chan_lock);
 
-	do {
-		if (mhi_dev_channel_has_pending_write(uci_handle->out_handle))
-			usleep_range(MHI_UCI_RELEASE_TIMEOUT_MIN,
-				MHI_UCI_RELEASE_TIMEOUT_MAX);
-		else
-			break;
-	} while (++count < MHI_UCI_RELEASE_TIMEOUT_COUNT);
+			mutex_lock(&uci_handle->in_chan_lock);
+			mhi_dev_close_channel(uci_handle->in_handle);
+			wake_up(&uci_handle->read_wq);
+			mutex_unlock(&uci_handle->in_chan_lock);
 
 	if (count == MHI_UCI_RELEASE_TIMEOUT_COUNT) {
 		uci_log(UCI_DBG_DBG, "Channel %d has pending writes\n",
 			iminor(mhi_inode));
 	}
-
-	if (atomic_read(&uci_handle->mhi_chans_open)) {
-		atomic_set(&uci_handle->mhi_chans_open, 0);
-
-		if (!(uci_handle->f_flags & O_SYNC))
-			kfree(uci_handle->wreqs);
-		mutex_lock(&uci_handle->out_chan_lock);
-		mhi_dev_close_channel(uci_handle->out_handle);
-		wake_up(&uci_handle->write_wq);
-		mutex_unlock(&uci_handle->out_chan_lock);
-
-		mutex_lock(&uci_handle->in_chan_lock);
-		mhi_dev_close_channel(uci_handle->in_handle);
-		wake_up(&uci_handle->read_wq);
-		mutex_unlock(&uci_handle->in_chan_lock);
-	}
-
-	atomic_set(&uci_handle->read_data_ready, 0);
-	atomic_set(&uci_handle->write_data_ready, 0);
-	file_handle->private_data = NULL;
-
 	return 0;
 }
 
@@ -1773,16 +1751,8 @@ static void mhi_uci_at_ctrl_client_cb(struct mhi_dev_client_cb_data *cb_data)
 		uci_ctxt.at_ctrl_wq = NULL;
 		if (!(client->f_flags & O_SYNC))
 			kfree(client->wreqs);
-		rc = mhi_dev_close_channel(client->out_handle);
-		if (rc)
-			uci_log(UCI_DBG_INFO,
-			"Failed to close channel %d ret %d\n",
-			client->out_chan, rc);
-		rc = mhi_dev_close_channel(client->in_handle);
-		if (rc)
-			uci_log(UCI_DBG_INFO,
-			"Failed to close channel %d ret %d\n",
-			client->in_chan, rc);
+		mhi_dev_close_channel(client->out_handle);
+		mhi_dev_close_channel(client->in_handle);
 	}
 }
 
