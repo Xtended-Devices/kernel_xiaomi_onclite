@@ -27,7 +27,6 @@ unsigned int sysctl_sched_boost;
 static enum sched_boost_policy boost_policy;
 static enum sched_boost_policy boost_policy_dt = SCHED_BOOST_NONE;
 static DEFINE_MUTEX(boost_mutex);
-static unsigned int freq_aggr_threshold_backup;
 static int boost_refcount[MAX_NUM_BOOST_TYPE];
 
 #ifdef CONFIG_DYNAMIC_STUNE_BOOST
@@ -148,8 +147,7 @@ static void _sched_set_boost(int type)
 			boost_refcount[CONSERVATIVE_BOOST] = 0;
 		}
 		if (boost_refcount[RESTRAINED_BOOST] > 0) {
-			update_freq_aggregate_threshold(
-				freq_aggr_threshold_backup);
+			walt_enable_frequency_aggregation(false);
 			boost_refcount[RESTRAINED_BOOST] = 0;
 		}
 		break;
@@ -174,10 +172,8 @@ static void _sched_set_boost(int type)
 
 	case RESTRAINED_BOOST:
 	    boost_refcount[RESTRAINED_BOOST]++;
-		if (boost_refcount[RESTRAINED_BOOST] == 1) {
-			freq_aggr_threshold_backup =
-			    update_freq_aggregate_threshold(1);
-		}
+		if (boost_refcount[RESTRAINED_BOOST] == 1)
+			walt_enable_frequency_aggregation(true);
 		break;
 
 	case FULL_THROTTLE_BOOST_DISABLE:
@@ -203,8 +199,7 @@ static void _sched_set_boost(int type)
 		if (boost_refcount[RESTRAINED_BOOST] >= 1) {
 			boost_refcount[RESTRAINED_BOOST]--;
 			if (!boost_refcount[RESTRAINED_BOOST])
-				update_freq_aggregate_threshold(
-					freq_aggr_threshold_backup);
+				walt_enable_frequency_aggregation(false);
 		}
 		break;
 
