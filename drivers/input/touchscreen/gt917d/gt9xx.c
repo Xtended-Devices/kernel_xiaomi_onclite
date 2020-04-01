@@ -1919,7 +1919,7 @@ static s8 gtp_request_irq(struct goodix_ts_data *ts)
 	GTP_DEBUG("gtp_request_irq modify by likang i2c->irq: %d, i2c_client->name:%s.", ts->client->irq, ts->client->name);
 	ret = request_threaded_irq(ts->client->irq, NULL,
 			goodix_ts_irq_handler,
-			IRQ_TYPE_EDGE_RISING | IRQF_ONESHOT,
+			IRQ_TYPE_EDGE_RISING | IRQF_ONESHOT | IRQF_PERF_CRITICAL,
 			ts->client->name,
 			ts);
 	if (ret)
