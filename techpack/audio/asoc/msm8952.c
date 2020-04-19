@@ -177,7 +177,7 @@ static const char *const ext_drcv_amp_function[] = { "Off", "On" };
 static int ext_kspk_amp_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
 {
 	ucontrol->value.integer.value[0] = aw87329_kspk_control;
-	pr_err("%s: aw87329_kspk_control = %d\n", __func__,
+	pr_debug("%s: aw87329_kspk_control = %d\n", __func__,
 	aw87329_kspk_control);
 	return 0;
 }
@@ -186,14 +186,14 @@ static int ext_kspk_amp_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_v
 	if(ucontrol->value.integer.value[0] == aw87329_kspk_control)
 		return 1;
 	aw87329_kspk_control = ucontrol->value.integer.value[0];
-	pr_err("%s: ext_kspk_amp_put = %d\n", __func__,
+	pr_debug("%s: ext_kspk_amp_put = %d\n", __func__,
 	aw87329_kspk_control);
 	if(ucontrol->value.integer.value[0]) {
 		aw87329_audio_kspk();
 	} else {
 		aw87329_audio_off();
 	}
-	pr_err("%s: value.integer.value = %ld\n", __func__,
+	pr_debug("%s: value.integer.value = %ld\n", __func__,
 	ucontrol->value.integer.value[0]);
 	return 0;
 }

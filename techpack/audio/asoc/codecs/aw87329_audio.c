@@ -176,7 +176,7 @@ static unsigned char i2c_read_reg(unsigned char reg_addr)
  ******************************************************************************/
 unsigned char aw87329_hw_on(void)
 {
-    pr_err("%s enter %d\n", __func__,aw87329->reset_gpio);
+    pr_info("%s enter %d\n", __func__,aw87329->reset_gpio);
 
     if (aw87329 && gpio_is_valid(aw87329->reset_gpio)) {
         gpio_set_value_cansleep(aw87329->reset_gpio, 0);
@@ -238,7 +238,7 @@ unsigned char aw87329_abrcv_reg_val(unsigned char reg)
 
 unsigned char aw87329_audio_kspk(void)
 {
-   pr_err("%s: enter aw87329_audio_kspk\n", __func__);
+   pr_info("%s: enter aw87329_audio_kspk\n", __func__);
     if(aw87329 == NULL) {
         pr_err("%s: aw87329 is NULL\n", __func__);
         return 1;
