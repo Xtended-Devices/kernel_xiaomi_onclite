@@ -1231,6 +1231,7 @@ static ssize_t ffs_epfile_io(struct file *file, struct ffs_io_data *io_data)
 
 		ret = usb_ep_queue(ep->ep, req, GFP_ATOMIC);
 		if (unlikely(ret)) {
+			io_data->req = NULL;
 			usb_ep_free_request(ep->ep, req);
 			goto error_lock;
 		}
@@ -1300,6 +1301,9 @@ static int ffs_aio_cancel(struct kiocb *kiocb)
 	int value;
 
 	ENTER();
+
+	ffs_log("enter:state %d setup_state %d flag %lu", epfile->ffs->state,
+		epfile->ffs->setup_state, epfile->ffs->flags);
 
 	spin_lock_irqsave(&epfile->ffs->eps_lock, flags);
 
