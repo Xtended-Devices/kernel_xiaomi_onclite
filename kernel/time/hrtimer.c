@@ -888,7 +888,6 @@ static void __remove_hrtimer(struct hrtimer *timer,
 		hrtimer_force_reprogram(cpu_base, 1);
 #endif
 
-out:
 	/*
 	* We need to preserve PINNED state here, otherwise we may end up
 	* migrating pinned hrtimers as well.

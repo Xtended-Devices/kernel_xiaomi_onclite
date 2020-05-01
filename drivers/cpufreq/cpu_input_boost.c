@@ -98,16 +98,6 @@ static void update_online_cpu_policy(void)
 	put_online_cpus();
 }
 
-static void unboost_all_cpus(struct boost_drv *b)
-{
-	if (!cancel_delayed_work_sync(&b->input_unboost) &&
-		!cancel_delayed_work_sync(&b->max_unboost))
-		return;
-
-	clear_boost_bit(b, INPUT_BOOST | WAKE_BOOST | MAX_BOOST);
-	update_online_cpu_policy();
-}
-
 static void __cpu_input_boost_kick(struct boost_drv *b)
 {
 	if (get_boost_state(b) & SCREEN_OFF)
