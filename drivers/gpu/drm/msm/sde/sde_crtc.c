@@ -3726,7 +3726,6 @@ void sde_crtc_commit_kickoff(struct drm_crtc *crtc,
 	struct sde_kms *sde_kms;
 	struct sde_crtc_state *cstate;
 	bool is_error, reset_req;
-	unsigned long flags;
 	enum sde_crtc_idle_pc_state idle_pc_state;
 	unsigned long flags;
 
