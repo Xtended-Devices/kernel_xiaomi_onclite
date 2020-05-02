@@ -190,39 +190,7 @@ struct dsi_panel {
 	struct dsi_pinctrl_info pinctrl;
 	struct drm_panel_hdr_properties hdr_props;
 	struct drm_panel_esd_config esd_config;
-	int panel_year;
-	int panel_mon;
-	int panel_day;
-	int panel_hour;
-	int panel_min;
-	int panel_year_index;
-	int panel_mon_index;
-	int panel_day_index;
-	int panel_hour_index;
-	int panel_min_index;
-	int acl_mode;
-	int acl_cmd_index;
-	int acl_mode_index;
-	int hbm_mode;
-	int aod_mode;
-	int aod_mode_test;
-	int aod_status;
-	int aod_curr_mode;
-	int aod_disable;
-	int naive_display_p3_mode;
-	int naive_display_wide_color_mode;
-	int naive_display_srgb_color_mode;
-	int naive_display_loading_effect_mode;
-	int naive_display_customer_srgb_mode;
-	int naive_display_customer_p3_mode;
-	int hbm_los_mode;
-	int status_value;
-	int panel_mismatch_check;
-	int panel_mismatch;
-	int hbm_backlight;
-	bool is_hbm_enabled;
-	int op_force_screenfp;
-	bool dim_status;
+
 	bool lp11_init;
 	bool ulps_enabled;
 	bool ulps_suspend_enabled;
@@ -292,8 +260,6 @@ int dsi_panel_get_phy_props(struct dsi_panel *panel,
 			    struct dsi_panel_phy_props *phy_props);
 int dsi_panel_get_dfps_caps(struct dsi_panel *panel,
 			    struct dsi_dfps_capabilities *dfps_caps);
-
-int dsi_panel_apply_hbm_mode(struct dsi_panel *panel);
 
 int dsi_panel_pre_prepare(struct dsi_panel *panel);
 
