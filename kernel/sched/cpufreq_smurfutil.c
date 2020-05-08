@@ -195,7 +195,8 @@ static unsigned int get_next_freq(struct smugov_policy *sg_policy,
 		max = max * (capacity_factor + 1) / capacity_factor;
 	}
 
-	unsigned long load = 100 * util / max;
+	unsigned long load;
+	load = 100 * util / max;
 	
 	if(load < tunables->target_load1){
 		freq = (freq + (freq >> tunables->bit_shift1)) * util / max;
@@ -245,7 +246,7 @@ static void smugov_get_util(unsigned long *util, unsigned long *max, int cpu)
 	*util = min(rq->cfs.avg.util_avg, cfs_max);
 	*max = cfs_max;
 
-	*util = boosted_cpu_util(cpu, &loadcpu->walt_load);
+	*util = boosted_cpu_util(cpu, cpu_util_rt(rq));
 }
 
 static void smugov_set_iowait_boost(struct smugov_cpu *sg_cpu, u64 time,

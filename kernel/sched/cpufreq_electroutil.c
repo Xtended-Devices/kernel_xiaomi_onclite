@@ -235,7 +235,7 @@ static void eugov_get_util(unsigned long *util, unsigned long *max, int cpu)
 	*util = min(rq->cfs.avg.util_avg, cfs_max);
 	*max = cfs_max;
 
-	*util = boosted_cpu_util(cpu, &loadcpu->walt_load);
+	*util = boosted_cpu_util(cpu, cpu_util_rt(rq));
 }
 
 static void eugov_set_iowait_boost(struct eugov_cpu *eg_cpu, u64 time,

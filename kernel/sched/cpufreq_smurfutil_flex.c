@@ -190,6 +190,7 @@ static unsigned int get_next_freq(struct smugov_policy *sg_policy,
 	unsigned int freq = arch_scale_freq_invariant() ?
 				policy->cpuinfo.max_freq : policy->cur;
 	unsigned int capacity_factor, silver_max_freq, gold_max_freq;
+	unsigned long load;
 
 	if(state_suspended) {
 		capacity_factor = sg_policy->tunables->suspend_capacity_factor;
@@ -198,7 +199,7 @@ static unsigned int get_next_freq(struct smugov_policy *sg_policy,
 		max = max * (capacity_factor + 1) / capacity_factor;
 	}
 
-	unsigned long load = 100 * util / max;
+	load = 100 * util / max;
 	if(load < tunables->target_load1){
 		freq = (freq + (freq >> tunables->bit_shift1)) * util / max;
 	} else if (load >= tunables->target_load1 && load < tunables->target_load2){
@@ -244,7 +245,7 @@ static void smugov_get_util(unsigned long *util, unsigned long *max, int cpu)
 	*util = min(rq->cfs.avg.util_avg, cfs_max);
 	*max = cfs_max;
 
-	*util = boosted_cpu_util(cpu, &loadcpu->walt_load);
+	*util = boosted_cpu_util(cpu, cpu_util_rt(rq));
 }
 
 static void smugov_set_iowait_boost(struct smugov_cpu *sg_cpu, u64 time,
