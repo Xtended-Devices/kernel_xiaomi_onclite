@@ -214,7 +214,6 @@ static void alloc_init_pmd(pud_t *pud, unsigned long addr, unsigned long end,
 		if (((addr | next | phys) & ~SECTION_MASK) == 0 &&
 		      allow_block_mappings &&
 		      !dma_overlap(phys, phys + next - addr)) {
-			pmd_t old_pmd =*pmd;
 			pmd_set_huge(pmd, phys, prot);
 
 			/*
@@ -275,7 +274,6 @@ static void alloc_init_pud(pgd_t *pgd, unsigned long addr, unsigned long end,
 		 */
 		if (use_1G_block(addr, next, phys) && allow_block_mappings &&
 		    !dma_overlap(phys, phys + next - addr)) {
-			pud_t old_pud = *pud;
 			pud_set_huge(pud, phys, prot);
 
 			/*
