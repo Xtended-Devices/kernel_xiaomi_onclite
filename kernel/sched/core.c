@@ -5856,6 +5856,7 @@ int sched_isolate_count(const cpumask_t *mask, bool include_offline)
 int sched_isolate_cpu(int cpu)
 {
 	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
 	cpumask_t avail_cpus;
 	int ret_code = 0;
 	u64 start_time = 0;
@@ -5898,7 +5899,9 @@ int sched_isolate_cpu(int cpu)
 		}
 	}
 
+	rq_lock(rq, &rf);
 	set_cpu_isolated(cpu, true);
+	rq_unlock(rq, &rf);
 	cpumask_clear_cpu(cpu, &avail_cpus);
 
 	/* Migrate timers */
@@ -5928,6 +5931,7 @@ int sched_unisolate_cpu_unlocked(int cpu)
 {
 	int ret_code = 0;
 	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
 	u64 start_time = 0;
 
 	if (trace_sched_isolate_enabled())
@@ -5949,7 +5953,9 @@ int sched_unisolate_cpu_unlocked(int cpu)
 		raw_spin_unlock_irqrestore(&rq->lock, flags);
 	}
 
+	rq_lock(rq, &rf);
 	set_cpu_isolated(cpu, false);
+	rq_unlock(rq, &rf);
 	update_max_interval();
 	sched_update_group_capacities(cpu);
 
