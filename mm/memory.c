@@ -1156,6 +1156,9 @@ again:
 			continue;
 		}
 
+		if (need_resched())
+			break;
+
 		if (pte_present(ptent)) {
 			struct page *page;
 
@@ -1240,7 +1243,7 @@ again:
 	}
 
 	if (addr != end) {
-		progress = 0;
+		cond_resched();
 		goto again;
 	}
 

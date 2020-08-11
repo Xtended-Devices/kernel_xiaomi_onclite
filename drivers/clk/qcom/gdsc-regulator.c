@@ -181,6 +181,9 @@ static int gdsc_is_enabled(struct regulator_dev *rdev)
 	if (!sc->toggle_logic)
 		return !sc->resets_asserted;
 
+	if (sc->skip_disable_before_enable)
+		return false;
+
 	regmap_read(sc->regmap, REG_OFFSET, &regval);
 
 	if (regval & PWR_ON_MASK) {
@@ -201,6 +204,9 @@ static int gdsc_enable(struct regulator_dev *rdev)
 	struct gdsc *sc = rdev_get_drvdata(rdev);
 	uint32_t regval, cfg_regval, hw_ctrl_regval = 0x0;
 	int i, ret = 0;
+
+	if (sc->skip_disable_before_enable)
+		return 0;
 
 	if (sc->parent_regulator) {
 		ret = regulator_set_voltage(sc->parent_regulator,
